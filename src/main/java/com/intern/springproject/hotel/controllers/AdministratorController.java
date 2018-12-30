@@ -1,0 +1,72 @@
+package com.intern.springproject.hotel.controllers;
+
+import com.intern.springproject.hotel.models.Hotel;
+import com.intern.springproject.hotel.models.Person;
+import com.intern.springproject.hotel.models.Reservation;
+import com.intern.springproject.hotel.models.Room;
+import com.intern.springproject.hotel.repositorys.HotelRepository;
+import com.intern.springproject.hotel.repositorys.PersonRepository;
+import com.intern.springproject.hotel.repositorys.ReservationRepository;
+import com.intern.springproject.hotel.repositorys.RoomRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/admin")
+public class AdministratorController {
+
+    private static final Logger log = LoggerFactory.getLogger(AdministratorController.class);
+
+    private HotelRepository hotelRepository;
+    private RoomRepository roomRepository;
+    private PersonRepository personRepository;
+    private ReservationRepository reservationRepository;
+
+    @Autowired
+
+    public AdministratorController(HotelRepository hotelRepository, RoomRepository roomRepository,
+                                   PersonRepository personRepository, ReservationRepository reservationRepository) {
+        this.hotelRepository = hotelRepository;
+        this.roomRepository = roomRepository;
+        this.personRepository = personRepository;
+        this.reservationRepository = reservationRepository;
+    }
+
+    @PostMapping("/newHotel")
+    void addNewHotel(@RequestBody @Validated Hotel hotel){
+            hotelRepository.save(hotel);
+    }
+
+    @PostMapping("/newRoom")
+    void addNewRoom(@RequestBody @Validated Room room){
+        roomRepository.save(room);
+    }
+
+    @GetMapping("/viewAllHotels")
+    List<Hotel> getAllHotels(){
+        return hotelRepository.findAll();
+    }
+
+    @GetMapping("/viewAllRooms")
+    List<Room> getAllRooms () {
+        return roomRepository.findAll();
+    }
+
+    @GetMapping("/viewAllPersons")
+    List<Person> getAllPersons(){
+        return personRepository.findAll();
+    }
+
+    @GetMapping("/viewAllReservations")
+    List<Reservation> getAllReservations(){
+        return reservationRepository.findAll();
+    }
+
+
+
+}
