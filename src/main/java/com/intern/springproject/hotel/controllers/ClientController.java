@@ -23,9 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/client")
 public class ClientController {
 
-
-
-
     private static final Logger log = LoggerFactory.getLogger(ClientController.class);
 
     private PersonRepository personRepository;
