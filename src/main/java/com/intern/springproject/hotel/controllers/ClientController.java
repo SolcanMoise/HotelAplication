@@ -8,6 +8,7 @@ import com.intern.springproject.hotel.repositorys.RoomRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,19 +42,20 @@ public class ClientController {
 
     // .............. Add a new Person ........... ...............
     @PostMapping("/newPerson")
-    void addNewPerson(@RequestBody Person person){
+    public void addNewPerson(@RequestBody Person person) throws DuplicateKeyException {
         if(!personRepository.findByCnp(person.getCnp()).isPresent()){
             log.info("Save new person with CNP: " + person.getCnp() + " in database");
             personRepository.save(person);
         }
         else {
             log.warn("Unable to save person with CNP: " + person.getCnp() + " in database. Already exist!");
+            throw new DuplicateKeyException("Duplicate entity");
         }
     }
 
     // .............. Add a new Reservation ......................
     @PostMapping("/newReservation")
-    void addNewReservation(@RequestBody Reservation reservation){
+    void addNewReservation(@RequestBody Reservation reservation) throws DuplicateKeyException{
         if(!isDuplicateReservation(reservation))
         {
             log.info("Save new reservation with id: "+ reservation.getId() + " in database");
@@ -61,6 +63,7 @@ public class ClientController {
         }
         else{
             log.warn("Unable to save reservation with id: " + reservation.getId() + " in database. It already exist!");
+            throw new DuplicateKeyException("Duplicate entity.");
         }
 
     }
