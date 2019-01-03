@@ -1,5 +1,7 @@
 package com.intern.springproject.hotel.controllers;
 
+import java.util.List;
+
 import com.intern.springproject.hotel.models.Hotel;
 import com.intern.springproject.hotel.models.Person;
 import com.intern.springproject.hotel.models.Reservation;
@@ -11,10 +13,13 @@ import com.intern.springproject.hotel.repositorys.RoomRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/admin")
@@ -28,7 +33,6 @@ public class AdministratorController {
     private ReservationRepository reservationRepository;
 
     @Autowired
-
     public AdministratorController(HotelRepository hotelRepository, RoomRepository roomRepository,
                                    PersonRepository personRepository, ReservationRepository reservationRepository) {
         this.hotelRepository = hotelRepository;
@@ -38,12 +42,12 @@ public class AdministratorController {
     }
 
     @PostMapping("/newHotel")
-    void addNewHotel(@RequestBody @Validated Hotel hotel){
+    void addNewHotel(@RequestBody @Validated Hotel hotel)throws DuplicateKeyException {
             hotelRepository.save(hotel);
     }
 
     @PostMapping("/newRoom")
-    void addNewRoom(@RequestBody @Validated Room room){
+    void addNewRoom(@RequestBody @Validated Room room) throws DuplicateKeyException {
         roomRepository.save(room);
     }
 

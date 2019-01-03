@@ -37,7 +37,7 @@ public class ClientControllerTest {
     ArgumentCaptor<Reservation> reservationArgumentCaptor;
 
     @Before
-    public void setup(){
+    public void setUp(){
         initMocks(this);
     }
 
