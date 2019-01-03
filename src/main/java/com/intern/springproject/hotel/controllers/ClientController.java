@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+
 /**
  * @RestController indicates that the data returned by each method will be written straight into the
  * repository body instead of rendering a template.
@@ -42,41 +44,29 @@ public class ClientController {
 
     // .............. Add a new Person ........... ...............
     @PostMapping("/newPerson")
-    public void addNewPerson(@RequestBody Person person) throws DuplicateKeyException {
-        if(!personRepository.findByCnp(person.getCnp()).isPresent()){
-            log.info("Save new person with CNP: " + person.getCnp() + " in database");
+    void addNewPerson(@RequestBody Person person) throws DuplicateKeyException {
+        try{
+            log.info("Try to add new " + person + " in database");
             personRepository.save(person);
         }
-        else {
-            log.warn("Unable to save person with CNP: " + person.getCnp() + " in database. Already exist!");
-            throw new DuplicateKeyException("Duplicate entity");
+        catch (DuplicateKeyException e){
+            log.warn("Unable to save " + person + " in database. Already exist.");
+            throw e;
         }
     }
 
     // .............. Add a new Reservation ......................
     @PostMapping("/newReservation")
     void addNewReservation(@RequestBody Reservation reservation) throws DuplicateKeyException{
-        if(!isDuplicateReservation(reservation))
-        {
-            log.info("Save new reservation with id: "+ reservation.getId() + " in database");
+        try {
+            log.info("Try to add new " + reservation + " in database");
             reservationRepository.save(reservation);
         }
-        else{
-            log.warn("Unable to save reservation with id: " + reservation.getId() + " in database. It already exist!");
-            throw new DuplicateKeyException("Duplicate entity.");
+        catch (DuplicateKeyException e){
+            log.warn("Unable to save " + reservation + " in database. Already exist.");
+            throw e;
         }
 
     }
-
-    private Boolean isDuplicateReservation(Reservation reservation) {
-        return reservationRepository.findByIdPerson(reservation.getIdPerson()).isPresent() &&
-                reservationRepository.findByIdHotel(reservation.getIdHotel()).isPresent() &&
-                reservationRepository.findByIdRoom(reservation.getIdRoom()).isPresent() &&
-                reservationRepository.findByDay(reservation.getDay()).isPresent() &&
-                reservationRepository.findByMonth(reservation.getMonth()).isPresent() &&
-                reservationRepository.findByYear(reservation.getYear()).isPresent() &&
-                reservationRepository.findByPeriod(reservation.getPeriod()).isPresent();
-    }
-
 
 }

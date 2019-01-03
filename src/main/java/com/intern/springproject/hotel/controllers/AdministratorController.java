@@ -33,8 +33,8 @@ public class AdministratorController {
     private ReservationRepository reservationRepository;
 
     @Autowired
-    public AdministratorController(HotelRepository hotelRepository, RoomRepository roomRepository,
-                                   PersonRepository personRepository, ReservationRepository reservationRepository) {
+    AdministratorController(HotelRepository hotelRepository, RoomRepository roomRepository,
+                            PersonRepository personRepository, ReservationRepository reservationRepository) {
         this.hotelRepository = hotelRepository;
         this.roomRepository = roomRepository;
         this.personRepository = personRepository;
@@ -43,12 +43,26 @@ public class AdministratorController {
 
     @PostMapping("/newHotel")
     void addNewHotel(@RequestBody @Validated Hotel hotel)throws DuplicateKeyException {
+        try{
+            log.info("Try to add new " + hotel + " in database");
             hotelRepository.save(hotel);
+        }
+        catch (DuplicateKeyException e){
+            log.warn("Unable to save " + hotel + "in database. Already exist");
+            throw e;
+        }
     }
 
     @PostMapping("/newRoom")
     void addNewRoom(@RequestBody @Validated Room room) throws DuplicateKeyException {
-        roomRepository.save(room);
+        try {
+            log.info("Try to add new " + room +" in database");
+            roomRepository.save(room);
+        }
+        catch (DuplicateKeyException e){
+            log.warn("Unable to save " + room + " in database. Already exist");
+            throw e;
+        }
     }
 
     @GetMapping("/viewAllHotels")
